@@ -1,11 +1,19 @@
 import React from 'react'
-import { Text, View } from 'react-native'
-
-
+import { StyleSheet, Text, View } from 'react-native'
 export default function SplashScreen() {
     return (
-        <View>
-            <Text style={{ color: 'white' }}>SplashScren</Text>
+        <View style={styles.container}>
+            <Text style={{ color: 'white', fontSize: 44 }}>
+                SplashScren
+            </Text>
         </View>
     )
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#4CAF50'
+    }
+})
