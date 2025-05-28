@@ -28,7 +28,7 @@ export default function SplashScreen() {
                 transform: [{ scale: scaleAnim }]
             }]}>
                 <Ionicons name="medical" size={100} color="white" />
-                <Text style={{ color: 'white', fontSize: 44 }}>
+                <Text style={styles.appName}>
                     Medimate
                 </Text>
             </Animated.View>
@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
     },
     iconContainer: {
         alignItems: 'center',
+    },
+    appName:{
         color: 'white',
         fontSize: 32,
         fontWeight: 'bold',
         marginTop: 20,
         letterSpacing: 1,
-
-
     }
 })
