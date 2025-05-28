@@ -1,11 +1,38 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useRef } from 'react';
+import { Animated, StyleSheet, Text, View } from 'react-native';
+
 export default function SplashScreen() {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const scaleAnim = useRef(new Animated.Value(0.5)).current;
+
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true
+            }),
+            Animated.spring(scaleAnim, {
+                toValue: 1,
+                tension: 10,
+                friction: 2,
+                useNativeDriver: true
+            })
+        ]).start();
+    }, [])
     return (
         <View style={styles.container}>
-            <Text style={{ color: 'white', fontSize: 44 }}>
-                SplashScren
-            </Text>
+            <Animated.View style={[styles.iconContainer, {
+                opacity: fadeAnim,
+                transform: [{ scale: scaleAnim }]
+            }]}>
+                <Ionicons name="medical" size={100} color="white" />
+                <Text style={{ color: 'white', fontSize: 44 }}>
+                    Medimate
+                </Text>
+            </Animated.View>
+
         </View>
     )
 }
@@ -15,5 +42,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#4CAF50'
+    },
+    iconContainer: {
+        alignItems: 'center',
+        color: 'white',
+        fontSize: 32,
+        fontWeight: 'bold',
+        marginTop: 20,
+        letterSpacing: 1,
+
+
     }
 })
