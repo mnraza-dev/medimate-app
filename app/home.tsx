@@ -96,6 +96,12 @@ export default function Home() {
                         >
                             <Ionicons name="notifications-outline" size={24} color="white" />
 
+                            <View style={styles.notificationBadge}>
+                                <Text style={styles.notificationCount}>
+                                    7
+                                </Text>
+                            </View>
+
                         </TouchableOpacity>
                     </View>
                     {/* Circular Progress */}
