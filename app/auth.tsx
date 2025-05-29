@@ -26,11 +26,19 @@ export default function AuthScreen() {
             setIsAuthenticating(true);
             setError(null);
 
-        const hasHardware = await LocalAuthentication.hasHardwareAsync();
-        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-           
+            const hasHardware = await LocalAuthentication.hasHardwareAsync();
+            const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+            const supportedTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
+            //    handle supported types 
+
+            const auth = await LocalAuthentication.authenticateAsync({
+                promptMessage: hasHardware && hasBiometrics ? 'Use Face ID/Touch ID' : 'Enter PIN',
+                fallbackLabel: 'Use PIN',
+                cancelLabel: 'Cancel',
+                disableDeviceFallback: false
+            })
         } catch (error) {
-            
+
         }
     }
     return (
