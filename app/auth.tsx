@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 const { width } = Dimensions.get('screen');
 const { height } = Dimensions.get('screen');
 
@@ -9,7 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 export default function AuthScreen() {
     const [hasBiometrics, setHasBiometrics] = useState(false);
     const [isAuthenticating, setIsAuthenticating] = useState(false);
-
+    const [error, setError] = useState(null);
     return (
         <LinearGradient colors={['#4CAF50', '#2E7D32']}>
             <View>
@@ -34,7 +34,14 @@ export default function AuthScreen() {
                             {isAuthenticating ? 'Verifying...' : hasBiometrics ? 'Authenticate' : 'Enter PIN'}
                         </Text>
                     </TouchableOpacity>
-
+                    {
+                        error && <View>
+                            <Ionicons name='alert-circle' size={20} color={'#F44336'} />
+                            <Text>
+                                {error}
+                            </Text>
+                        </View>
+                    }
                 </View>
 
 
@@ -43,3 +50,8 @@ export default function AuthScreen() {
         </LinearGradient>
     )
 }
+const styles = StyleSheet.create({
+container:{
+    
+}
+})
