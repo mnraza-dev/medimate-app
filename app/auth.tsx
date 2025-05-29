@@ -33,7 +33,7 @@ export default function AuthScreen() {
 
             //    handle supported types 
             const auth = await LocalAuthentication.authenticateAsync({
-                promptMessage: hasHardware && hasBiometrics ? 'Use Face ID/Touch ID' : 'Enter PIN',
+                promptMessage: hasHardware && isEnrolled ? 'Use Face ID/Touch ID' : 'Enter PIN',
                 fallbackLabel: 'Use PIN',
                 cancelLabel: 'Cancel',
                 disableDeviceFallback: false
@@ -61,7 +61,7 @@ export default function AuthScreen() {
                         {hasBiometrics ? 'Use face ID/Touch ID or PIN to access your medications' : 'Enter your PIN to access your medications'}
                     </Text>
                     <TouchableOpacity style={[styles.button, isAuthenticating && styles.buttonDisabled]} disabled={isAuthenticating}
-                    // onPress={authenticate}
+                    onPress={authenticate}
                     >
                         <Ionicons style={styles.buttonIcon} name={
                             hasBiometrics ? 'finger-print-outline' : 'keypad-outline'
