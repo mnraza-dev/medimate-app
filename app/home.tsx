@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Link, useRouter } from 'expo-router';
 import { useEffect, useRef } from "react";
 import {
     Animated,
@@ -12,9 +13,39 @@ import {
 } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 const { width } = Dimensions.get('window');
-
 // Create animated circle component
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const QUICK_ACTIONS = [
+    {
+        icon: "add-circle-outline" as const,
+        label: "Add\nMedication",
+        route: "/medications/add" as const,
+        color: "#2E7D32",
+        gradient: ["#4CAF50", "#2E7D32"] as [string, string],
+    },
+    {
+        icon: "calendar-outline" as const,
+        label: "Calendar\nView",
+        route: "/calendar" as const,
+        color: "#1976D2",
+        gradient: ["#2196F3", "#1976D2"] as [string, string],
+    },
+    {
+        icon: "time-outline" as const,
+        label: "History\nLog",
+        route: "/history" as const,
+        color: "#C2185B",
+        gradient: ["#E91E63", "#C2185B"] as [string, string],
+    },
+    {
+        icon: "medical-outline" as const,
+        label: "Refill\nTracker",
+        route: "/refills" as const,
+        color: "#E64A19",
+        gradient: ["#FF5722", "#E64A19"] as [string, string],
+    },
+];
+
 interface CircularProgressProps {
     progress: number;
     totalDoses: number;
@@ -51,7 +82,7 @@ function CircularProgress({
                 <Text style={styles.progressPercentage}>
                     {Math.round(progress)}%
                 </Text>
-                <Text style={styles.progressDetails}>
+                <Text style={styles.progressLabel}>
                     {completedDoses} of {totalDoses} doses
                 </Text>
             </View>
@@ -82,6 +113,7 @@ function CircularProgress({
 }
 
 export default function Home() {
+    const router = useRouter();
     return (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             <LinearGradient style={styles.header} colors={['#4c669f', '#3b5998', '#192f6a']}>
@@ -113,6 +145,36 @@ export default function Home() {
                 </View>
 
             </LinearGradient>
+
+            {/* Quick Actions  */}
+            <View style={styles.content}>
+                <View style={styles.quickActionsContainer}>
+                    <Text style={styles.sectionTitle}>
+                        Quick Actions
+                    </Text>
+                    <View style={styles.quickActionsGrid}>
+                        {QUICK_ACTIONS.map((actions) => (
+                            <Link href={actions.route} key={actions.label} asChild>
+                                <TouchableOpacity style={styles.actionButton}>
+                                    <LinearGradient colors={actions.gradient}
+                                        style={styles.actionGradient}>
+                                        <View style={styles.actionContent}>
+                                            <View style={styles.actionIcon}>
+                                                <Ionicons name={actions.icon} size={28} color="white" />
+                                            </View>
+                                            <Text style={styles.actionLabel} >{actions.label}</Text>
+                                        </View>
+
+                                    </LinearGradient>
+                                </TouchableOpacity>
+                            </Link>
+                        ))}
+
+                    </View>
+
+                </View>
+
+            </View>
         </ScrollView >
     )
 }
