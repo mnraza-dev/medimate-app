@@ -1,92 +1,116 @@
-import React, { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-const { width } = Dimensions.get('screen');
-const { height } = Dimensions.get('screen');
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import * as LocalAuthentication from "expo-local-authentication";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+    Dimensions,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import * as LocalAuthentication from 'expo-local-authentication';
-import { useRouter } from 'expo-router';
+const { width } = Dimensions.get("window");
 
 export default function AuthScreen() {
-    const [hasBiometrics, setHasBiometrics] = useState(false);
+    const router = useRouter();
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
+    const [hasBiometrics, setHasBiometrics] = useState(false);
+
     useEffect(() => {
         checkBiometrics();
-    }, [])
+    }, []);
+
     const checkBiometrics = async () => {
         const hasHardware = await LocalAuthentication.hasHardwareAsync();
         const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-
         setHasBiometrics(hasHardware && isEnrolled);
-    }
+    };
+
     const authenticate = async () => {
         try {
             setIsAuthenticating(true);
             setError(null);
 
+            // Check if device has biometric hardware
             const hasHardware = await LocalAuthentication.hasHardwareAsync();
-            const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-            const supportedTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
+            const supportedTypes =
+                await LocalAuthentication.supportedAuthenticationTypesAsync();
+            const hasBiometrics = await LocalAuthentication.isEnrolledAsync();
 
-            //    handle supported types 
             const auth = await LocalAuthentication.authenticateAsync({
-                promptMessage: hasHardware && isEnrolled ? 'Use Face ID/Touch ID' : 'Enter PIN',
-                fallbackLabel: 'Use PIN',
-                cancelLabel: 'Cancel',
-                disableDeviceFallback: false
-            })
+                promptMessage:
+                    hasHardware && hasBiometrics
+                        ? "Use Face ID or Touch ID"
+                        : "Enter your PIN to access MedRemind",
+                fallbackLabel: "Use PIN",
+                cancelLabel: "Cancel",
+                disableDeviceFallback: false,
+            });
 
             if (auth.success) {
-                router.replace('/');
+                router.replace("/");
+            } else {
+                setError("Authentication failed. Please try again.");
             }
-        } catch (error) {
-            setError("Authentication Failed: please try again !")
+        } catch (err) {
+            setError("An error occurred. Please try again.");
+            console.error(err);
+        } finally {
+            setIsAuthenticating(false);
         }
-    }
+    };
+
     return (
-        <LinearGradient colors={['#4CAF50', '#2E7D32']} style={styles.container}>
+        <LinearGradient colors={["#4CAF50", "#2E7D32"]} style={styles.container}>
             <View style={styles.content}>
                 <View style={styles.iconContainer}>
-                    <Ionicons name='medical' size={80} color='white' />
+                    <Ionicons name="medical" size={80} color="white" />
                 </View>
-                <Text style={styles.title}>Medimate</Text>
-                <Text style={styles.subtitle}>Your Personal Medication Reminder </Text>
+
+                <Text style={styles.title}>MedRemind</Text>
+                <Text style={styles.subtitle}>Your Personal Medication Assistant</Text>
 
                 <View style={styles.card}>
                     <Text style={styles.welcomeText}>Welcome Back!</Text>
                     <Text style={styles.instructionText}>
-                        {hasBiometrics ? 'Use face ID/Touch ID or PIN to access your medications' : 'Enter your PIN to access your medications'}
+                        {hasBiometrics
+                            ? "Use Face ID/Touch ID or PIN to access your medications"
+                            : "Enter your PIN to access your medications"}
                     </Text>
-                    <TouchableOpacity style={[styles.button, isAuthenticating && styles.buttonDisabled]} disabled={isAuthenticating}
-                    onPress={authenticate}
+
+                    <TouchableOpacity
+                        style={[styles.button, isAuthenticating && styles.buttonDisabled]}
+                        onPress={authenticate}
+                        disabled={isAuthenticating}
                     >
-                        <Ionicons style={styles.buttonIcon} name={
-                            hasBiometrics ? 'finger-print-outline' : 'keypad-outline'
-                        } size={24} color='white' />
-
-
+                        <Ionicons
+                            name={hasBiometrics ? "finger-print-outline" : "keypad-outline"}
+                            size={24}
+                            color="white"
+                            style={styles.buttonIcon}
+                        />
                         <Text style={styles.buttonText}>
-                            {isAuthenticating ? 'Verifying...' : hasBiometrics ? 'Authenticate' : 'Enter PIN'}
+                            {isAuthenticating
+                                ? "Verifying..."
+                                : hasBiometrics
+                                    ? "Authenticate"
+                                    : "Enter PIN"}
                         </Text>
                     </TouchableOpacity>
-                    {
-                        error && <View style={styles.errorContainer}>
-                            <Ionicons name='alert-circle' size={20} color={'#F44336'} />
-                            <Text style={styles.errorText}>
-                                {error}
-                            </Text>
+
+                    {error && (
+                        <View style={styles.errorContainer}>
+                            <Ionicons name="alert-circle" size={20} color="#f44336" />
+                            <Text style={styles.errorText}>{error}</Text>
                         </View>
-                    }
+                    )}
                 </View>
-
-
             </View>
-
         </LinearGradient>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
