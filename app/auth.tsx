@@ -6,12 +6,13 @@ const { height } = Dimensions.get('screen');
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { useRouter } from 'expo-router';
 
 export default function AuthScreen() {
     const [hasBiometrics, setHasBiometrics] = useState(false);
     const [isAuthenticating, setIsAuthenticating] = useState(false);
-    const [error, setError] = useState(null);
-
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
     useEffect(() => {
         checkBiometrics();
     }, [])
@@ -29,16 +30,20 @@ export default function AuthScreen() {
             const hasHardware = await LocalAuthentication.hasHardwareAsync();
             const isEnrolled = await LocalAuthentication.isEnrolledAsync();
             const supportedTypes = await LocalAuthentication.supportedAuthenticationTypesAsync();
-            //    handle supported types 
 
+            //    handle supported types 
             const auth = await LocalAuthentication.authenticateAsync({
                 promptMessage: hasHardware && hasBiometrics ? 'Use Face ID/Touch ID' : 'Enter PIN',
                 fallbackLabel: 'Use PIN',
                 cancelLabel: 'Cancel',
                 disableDeviceFallback: false
             })
-        } catch (error) {
 
+            if (auth.success) {
+                router.replace('/');
+            }
+        } catch (error) {
+            setError("Authentication Failed: please try again !")
         }
     }
     return (
