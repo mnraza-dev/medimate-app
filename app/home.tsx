@@ -83,29 +83,31 @@ function CircularProgress({
 
 export default function Home() {
     return (
-        <ScrollView showsVerticalScrollIndicator={false}>
-            <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']}>
-                <View>
-                    <View>
-                        <View>
-                            <Text>Daily Progress</Text>
-                            <TouchableOpacity>
-                                <Ionicons name="notifications-outline" size={24} color="white" />
-
-                            </TouchableOpacity>
+        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+            <LinearGradient style={styles.header} colors={['#4c669f', '#3b5998', '#192f6a']}>
+                <View style={styles.headerContent}>
+                    <View style={styles.headerTop}>
+                        <View style={styles.flex1}>
+                            <Text style={styles.greeting}>Daily Progress</Text>
                         </View>
-                        {/* Circular Progress */}
+                        <TouchableOpacity
+                            style={styles.notificationButton}
+                        //   onPress={() => setShowNotifications(true)}
+                        >
+                            <Ionicons name="notifications-outline" size={24} color="white" />
 
-                        <CircularProgress
-                            progress={50}
-                            totalDoses={100}
-                            completedDoses={50}
-                        />
+                        </TouchableOpacity>
                     </View>
+                    {/* Circular Progress */}
+                    <CircularProgress
+                        progress={50}
+                        totalDoses={100}
+                        completedDoses={50}
+                    />
                 </View>
 
             </LinearGradient>
-        </ScrollView>
+        </ScrollView >
     )
 }
 
