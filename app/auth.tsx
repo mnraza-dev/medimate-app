@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 const { width } = Dimensions.get('screen');
 const { height } = Dimensions.get('screen');
 
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 export default function AuthScreen() {
     const [hasBiometrics, setHasBiometrics] = useState(false);
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        checkBiometrics();
+    }, [])
+    const checkBiometrics = async () => {
+        const hasBiometrics = await LocalAuthentication.hasHardwareAsync();
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+
+        setHasBiometrics(hasBiometrics && isEnrolled);
+    }
+    const authenticate = async () => {
+        
+    }
     return (
         <LinearGradient colors={['#4CAF50', '#2E7D32']} style={styles.container}>
             <View style={styles.content}>
