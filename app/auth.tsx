@@ -11,8 +11,8 @@ export default function AuthScreen() {
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [error, setError] = useState(null);
     return (
-        <LinearGradient colors={['#4CAF50', '#2E7D32']}>
-            <View>
+        <LinearGradient colors={['#4CAF50', '#2E7D32']} style={styles.container}>
+            <View style={styles.content}>
                 <View>
                     <Ionicons name='medical' size={80} color='white' />
                 </View>
@@ -51,7 +51,14 @@ export default function AuthScreen() {
     )
 }
 const styles = StyleSheet.create({
-container:{
-    
-}
+    container: {
+        flex: 1,
+
+    },
+    content: {
+        flex: 1,
+        padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 })
