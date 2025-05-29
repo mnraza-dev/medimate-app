@@ -16,13 +16,22 @@ export default function AuthScreen() {
         checkBiometrics();
     }, [])
     const checkBiometrics = async () => {
-        const hasBiometrics = await LocalAuthentication.hasHardwareAsync();
+        const hasHardware = await LocalAuthentication.hasHardwareAsync();
         const isEnrolled = await LocalAuthentication.isEnrolledAsync();
 
-        setHasBiometrics(hasBiometrics && isEnrolled);
+        setHasBiometrics(hasHardware && isEnrolled);
     }
     const authenticate = async () => {
-        
+        try {
+            setIsAuthenticating(true);
+            setError(null);
+
+        const hasHardware = await LocalAuthentication.hasHardwareAsync();
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+           
+        } catch (error) {
+            
+        }
     }
     return (
         <LinearGradient colors={['#4CAF50', '#2E7D32']} style={styles.container}>
