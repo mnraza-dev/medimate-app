@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import {
     Animated,
     Dimensions,
+    Modal,
     ScrollView,
     StyleSheet,
     Text,
@@ -175,6 +176,116 @@ export default function Home() {
                 </View>
 
             </View>
+
+            {/* Medications */}
+            <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>Today's Schedule</Text>
+                    <Link href="/calendar" asChild>
+                        <TouchableOpacity>
+                            <Text style={styles.seeAllButton}>See All</Text>
+                        </TouchableOpacity>
+                    </Link>
+                </View>
+                {
+                    true ? (
+                        <View style={styles.emptyState}>
+                            <Ionicons name="medkit-outline" size={48} color="#ccc" />
+                            <Text style={styles.emptyStateText}> No Medications Scheduled for today</Text>
+
+                            <Link href="/medications/add" asChild>
+                                <TouchableOpacity style={styles.addMedicationButton}>
+                                    <Text style={styles.addMedicationButtonText}>
+                                        Add Medication
+                                    </Text>
+                                </TouchableOpacity>
+                            </Link>
+                        </View>
+                    ) : (
+                        [].map((medications) => {
+                            // const taken = medications.taken;
+                            return (
+                                <View style={styles.doseCard}>
+                                    <View style={styles.doseBadge}>
+                                        <Ionicons name="medkit" size={24} color="#ccc" />
+                                    </View>
+                                    <View style={styles.doseInfo}>
+                                        <Text style={styles.medicineName}>
+                                            name
+                                        </Text>
+                                        <Text style={styles.dosageInfo}>Dosage</Text>
+                                    </View>
+                                    <View style={styles.doseTime}>
+                                        <Ionicons name="time-outline" size={16} color="#ccc" />
+                                        <Text style={styles.timeText}>
+                                            medication Time
+                                        </Text>
+
+                                    </View>
+                                    {
+                                        false ? (
+                                            <View style={styles.takeDoseButton}>
+                                                <Ionicons name="checkmark-circle-outline" size={24} color="#ccc" />
+                                                <Text style={styles.takeDoseText}>Taken Medication</Text>
+                                            </View>
+                                        ) : (
+                                            <TouchableOpacity style={styles.takeDoseButton}>
+
+                                                <Text style={styles.takeDoseText}>Take Medication</Text>
+                                            </TouchableOpacity>
+                                        )
+
+                                    }
+                                </View>
+                            )
+                        })
+                    )
+                }
+
+
+            </View>
+
+            {/* Add Medication */}
+            <Modal
+                visible={true}
+                animationType="slide"
+                transparent={true}>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>Notifications</Text>
+                            <TouchableOpacity
+                                // onPress={() => setShowNotifications(false)}
+                                style={styles.closeButton}
+                            >
+                                <Ionicons name="close" size={24} color="#333" />
+                            </TouchableOpacity>
+                        </View>
+                        {
+                            [].map((notification) => (
+                                <View style={styles.notificationItem}>
+                                    <View style={styles.notificationIcon}>
+                                        <Ionicons name="medkit" size={24} color="#ccc" />
+                                    </View>
+                                    <View style={styles.notificationContent}>
+                                        <Text style={styles.notificationTitle}>
+                                            Medication Name
+                                        </Text>
+                                        <Text style={styles.notificationMessage}>
+                                            Medication Dosage
+                                        </Text>
+                                        <Text style={styles.notificationTime}>
+                                            Medication Time
+                                        </Text>
+                                    </View>
+                                </View>
+
+                            ))
+                        }
+                    </View>
+                </View>
+
+            </Modal>
         </ScrollView >
     )
 }
