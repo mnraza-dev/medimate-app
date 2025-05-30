@@ -70,7 +70,7 @@ export default function AddMedicationScreen() {
                 {DURATIONS.map((duration) => (
                     <TouchableOpacity key={duration.id}>
                         <View>
-                            <Text>{duration.value > 0 ? duration.value : ""}</Text>
+                            <Text>{duration.value > 0 ? duration.value : "♾️"}</Text>
                             <Text>{duration.label}</Text>
                         </View>
                     </TouchableOpacity>
@@ -111,6 +111,18 @@ export default function AddMedicationScreen() {
                     {renderFrequencyOptions()}
 
                     <Text> For how long ?</Text>
+                    {/* render duration options */}
+                    {renderDurationOptions()}
+
+                    <TouchableOpacity>
+                        <View>
+                            <Ionicons name="calendar-outline" size={24} color="#1a8e2d" />
+
+                        </View>
+                        <Text>
+                            Starts { }
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </View>
