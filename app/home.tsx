@@ -247,7 +247,7 @@ export default function Home() {
 
             {/* Add Medication */}
             <Modal
-                visible={true}
+                visible={false}
                 animationType="slide"
                 transparent={true}>
                 <View style={styles.modalOverlay}>

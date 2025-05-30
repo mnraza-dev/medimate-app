@@ -1,8 +1,13 @@
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
     Dimensions,
+    Platform,
+    ScrollView,
     StyleSheet,
     Text,
+    TouchableOpacity,
     View
 } from "react-native";
 const { width } = Dimensions.get("window");
@@ -10,9 +15,27 @@ export default function AddMedicationScreen() {
     const router = useRouter();
     return (
         <View style={styles.container}>
-            <Text>
-                Add Medications
-            </Text>
+            <LinearGradient
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                colors={["#4c669f", "#3b5998", "#192f6a"]}
+                style={styles.headerGradient}
+            />
+            <View>
+                <View>
+                    <TouchableOpacity>
+                        <Ionicons name="chevron-back" size={28} color="white" />
+                    </TouchableOpacity>
+                </View>
+                <Text style={styles.headerTitle}>New Medication</Text>
+            </View>
+
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={styles.formContainer}>
+                    {/* Basic Info */}
+                    
+                </View>
+            </ScrollView>
         </View>
     )
 }
