@@ -63,14 +63,32 @@ export default function AddMedicationScreen() {
         currentSupply: "",
         refillAt: "",
     });
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [showTimePicker, setShowTimePicker] = useState(false);
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [selectedFrequency, setSelectedFrequency] = useState("");
+    const [selectedDuration, setSelectedDuration] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const renderFrequencyOptions = () => {
         return (
-            <View>
+            <View style={styles.optionsGrid}>
                 {FREQUENCIES.map((frequency) => (
-                    <TouchableOpacity key={frequency.id}>
-                        <View>
-                            <Ionicons name={frequency.icon} size={24} color="white" />
-                            <Text>{frequency.label}</Text>
+                    <TouchableOpacity
+                        style={[
+                            styles.optionCard, selectedFrequency === frequency.label && styles.selectedOptionCard
+                        ]}
+                        key={frequency.id}>
+                        <View style={
+                            [styles.optionIcon,
+                            selectedFrequency === frequency.label && styles.selectedOptionIcon
+                            ]} >
+                            <Ionicons
+                                name={frequency.icon}
+                                size={24}
+                                color={selectedFrequency === frequency.label ? "white" : "#666"} />
+                            <Text style={[styles.optionLabel,
+                            selectedFrequency === frequency.label && styles.selectedOptionLabel
+                            ]}>{frequency.label}</Text>
                         </View>
                     </TouchableOpacity>
                 ))}
@@ -79,13 +97,16 @@ export default function AddMedicationScreen() {
     }
     const renderDurationOptions = () => {
         return (
-            <View>
+            <View style={styles.optionsGrid}>
                 {DURATIONS.map((duration) => (
-                    <TouchableOpacity key={duration.id}>
-                        <View>
-                            <Text>{duration.value > 0 ? duration.value : "♾️"}</Text>
-                            <Text>{duration.label}</Text>
-                        </View>
+                    <TouchableOpacity style={[styles.optionCard, selectedDuration === duration.label && styles.selectedOptionCard]} key={duration.id}>
+
+                        <Text style={[styles.durationNumber, selectedDuration === duration.label && styles.selectedDurationNumber]}>
+                            {duration.value > 0 ? duration.value : "♾️"}
+
+                        </Text>
+                        <Text>{duration.label}</Text>
+
                     </TouchableOpacity>
                 ))}
             </View>
@@ -100,59 +121,131 @@ export default function AddMedicationScreen() {
                 colors={["#4c669f", "#3b5998", "#192f6a"]}
                 style={styles.headerGradient}
             />
-            <View>
-                <View>
-                    <TouchableOpacity>
-                        <Ionicons name="chevron-back" size={28} color="white" />
+            <View style={styles.content}>
+                <View style={styles.header}>
+                    <TouchableOpacity style={styles.backButton}>
+                        <Ionicons name="chevron-back" size={28} color="#192f6a" />
                     </TouchableOpacity>
+                    <Text style={styles.headerTitle}>New Medication</Text>
                 </View>
-                <Text style={styles.headerTitle}>New Medication</Text>
 
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={styles.formContainer}>
-                        <TextInput
-                            placeholder="Medication Name"
-                            placeholderTextColor={"#999"}
-                        />
-                    </View>
-                    <View style={styles.formContainer}>
-                        <TextInput
-                            placeholder="Dosage (eg: 500mg)"
-                            placeholderTextColor={"#999"}
-                        />
-                    </View>
-                    <View style={styles.formContainer}>
-                        <Text>How Often ?</Text>
-                        {renderFrequencyOptions()}
-                        <Text> For how long ?</Text>
-                        {renderDurationOptions()}
-                        <TouchableOpacity>
-                            <View>
-                                <Ionicons
-                                    name="calendar-outline"
-                                    size={24}
-                                    color="#1a8e2d"
-                                />
-                            </View>
-                            <Text>
-                                Starts { }
+                <ScrollView style={{
+                    flex: 1
+                }} contentContainerStyle={styles.formContentContainer}
+                    showsVerticalScrollIndicator={false}>
+                    <View style={styles.section}>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                style={[styles.mainInput, errors.name && styles.inputError]}
+                                placeholder="Medication Name"
+                                placeholderTextColor={"#999"}
+                                value={form.name}
+                                onChangeText={(text) => {
+                                    setForm({ ...form, name: text })
+                                    if (errors.name) setErrors({ ...errors, name: "" })
+                                }}
+                            />
+                            {errors.name &&
+                                <Text style={styles.errorText}>
+                                    {errors.name}
+                                </Text>
+                            }
+                        </View>
+
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                style={[styles.mainInput, errors.dosage && styles.inputError]}
+                                placeholder="Dosage (eg: 500mg)"
+                                placeholderTextColor={"#999"}
+                                value={form.dosage}
+                                onChangeText={(text) => {
+                                    setForm({ ...form, dosage: text })
+                                    if (errors.dosage) setErrors({ ...errors, dosage: "" })
+                                }}
+                            />
+                            {errors.dosages &&
+                                <Text style={styles.errorText}>
+                                    {errors.name}
+                                </Text>
+                            }
+                        </View>
+                        <View style={styles.container}>
+                            <Text style={styles.sectionTitle}>
+                                How Often ?
                             </Text>
-                        </TouchableOpacity>
-                        <DateTimePicker
-                            mode="date"
+                            {
+                                errors.frequency && (
+                                    <Text style={styles.errorText}>
+                                        {errors.frequency}
+                                    </Text>
+                                )
+                            }
+                            {renderFrequencyOptions()}
+                            <Text style={styles.sectionTitle}> For how long ?</Text>
+                            {
+                                errors.duration && (
+                                    <Text style={styles.errorText}>
+                                        {errors.duration}
+                                    </Text>
+                                )
+                            }
+                            {renderDurationOptions()}
+                            <TouchableOpacity
+                                onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
+                                <View>
+                                    <Ionicons
+                                        name="calendar-outline"
+                                        size={24}
+                                        color="#1a8e2d"
+                                    />
+                                </View>
+                                <Text style={styles.dateButtonText}>
+                                    Starts {form.startDate.toLocaleDateString()}
+                                </Text>
+                                <Ionicons
+                                    name="chevron-forward"
+                                    size={20}
+                                    color="#666"
+                                />
+                            </TouchableOpacity>
+                            {showDatePicker && (
+                                <DateTimePicker
+                                    mode="date"
+                                    onChange={(event, date) => {
+                                        setShowDatePicker(false);
+                                        if (date) {
+                                            setForm({ ...form, startDate: date });
+                                        }
+                                    }}
+                                    value={form.startDate}
+                                />
+                            )}
+                            {showTimePicker && (
+                                <DateTimePicker
+                                    mode="time"
+                                    value={(() => {
+                                        const [hours, minutes] = form.times[0].split(":").map(Number);
+                                        const date = new Date();
+                                        date.setHours(hours, minutes, 0, 0);
+                                        return date;
+                                    })()
+                                    }
+                                    onChange={(event, date) => {
+                                        setShowDatePicker(false);
+                                        if (date) {
+                                            const newTime = date.toLocaleTimeString('default', { hour: '2-digit', minute: '2-digit', hour12: false });
+                                            setForm((prev) => ({
+                                                ...prev,
+                                                times: prev.times.map((t, i) => (i))
+                                            }));
 
-                            value={form.startDate}
-                        />
-                        <DateTimePicker
-                            mode="time"
+                                        }
+                                    }}
 
-                            value={(() => {
-                                const [hours, minutes] = form.times[0].split(":").map(Number);
-                                const date = new Date();
-                                date.setHours(hours, minutes, 0, 0);
-                                return date;
-                            })()}
-                        />
+                                />
+                            )}
+
+                        </View>
                     </View>
 
                     {/* Reminders */}
@@ -201,6 +294,37 @@ export default function AddMedicationScreen() {
                     </View>
 
                 </ScrollView>
+                {/* Submit Button */}
+                <View style={styles.footer}>
+                    <TouchableOpacity
+                        style={[
+                            styles.saveButton,
+                            // isSubmitting && styles.saveButtonDisabled,
+                        ]}
+                    // onPress={handleSave}
+                    // disabled={isSubmitting}
+                    >
+                        <LinearGradient
+                            colors={["#1a8e2d", "#146922"]}
+                            style={styles.saveButtonGradient}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                        >
+                            <Text style={styles.saveButtonText}>
+                                Add  Medication
+                                {/* {isSubmitting ? "Adding..." : "Add Medication"} */}
+                            </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                    {/* Cancel Button */}
+                    <TouchableOpacity
+                        style={styles.cancelButton}
+                        onPress={() => router.back()}
+                    // disabled={isSubmitting}
+                    >
+                        <Text style={styles.cancelButtonText}>Cancel</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     )
