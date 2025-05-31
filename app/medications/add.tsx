@@ -8,6 +8,7 @@ import {
     Platform,
     ScrollView,
     StyleSheet,
+    Switch,
     Text,
     TextInput,
     TouchableOpacity,
@@ -153,6 +154,7 @@ export default function AddMedicationScreen() {
                             })()}
                         />
                     </View>
+
                     {/* Reminders */}
                     <View style={styles.section}>
                         <View style={styles.card}>
@@ -179,9 +181,28 @@ export default function AddMedicationScreen() {
                             </View>
                         </View>
                     </View>
+                    {/* Refill Tracking */}
+
+
+                    {/* Notes */}
+                    <View style={styles.section}>
+                        <View style={styles.textAreaContainer}>
+                            <TextInput
+                                style={styles.textArea}
+                                placeholder="Add notes or special instructions..."
+                                placeholderTextColor="#999"
+                                value={form.notes}
+                                onChangeText={(text) => setForm({ ...form, notes: text })}
+                                multiline
+                                numberOfLines={4}
+                                textAlignVertical="top"
+                            />
+                        </View>
+                    </View>
 
                 </ScrollView>
-            </View>   </View>
+            </View>
+        </View>
     )
 }
 const styles = StyleSheet.create({
